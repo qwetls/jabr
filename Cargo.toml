@@ -1,0 +1,17 @@
+[package]
+name = "jabr"
+version = "0.1.0"
+edition = "2021"
+description = "Jabr — a programming language inspired by the Islamic Golden Age"
+license = "MIT"
+authors = ["qwetls"]
+
+[lib]
+name = "jabr"
+path = "src/lib.rs"
+
+[[bin]]
+name = "jabr"
+path = "src/main.rs"
+
+[dependencies]
