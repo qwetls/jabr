@@ -109,13 +109,19 @@ fn left_associative_subtraction() {
 #[test]
 fn unary_negation() {
     let ast = parse_expr("print -5;");
-    assert_eq!(ast, Expr::UnaryOp(UnaryOpKind::Neg, Box::new(Expr::Number(5.0))));
+    assert_eq!(
+        ast,
+        Expr::UnaryOp(UnaryOpKind::Neg, Box::new(Expr::Number(5.0)))
+    );
 }
 
 #[test]
 fn unary_not() {
     let ast = parse_expr("print !true;");
-    assert_eq!(ast, Expr::UnaryOp(UnaryOpKind::Not, Box::new(Expr::Bool(true))));
+    assert_eq!(
+        ast,
+        Expr::UnaryOp(UnaryOpKind::Not, Box::new(Expr::Bool(true)))
+    );
 }
 
 #[test]
@@ -170,21 +176,27 @@ fn function_call() {
 #[test]
 fn comparison_operators() {
     let ast = parse_expr("print 1 < 2;");
-    assert_eq!(ast, Expr::BinOp(
-        Box::new(Expr::Number(1.0)),
-        BinOpKind::Lt,
-        Box::new(Expr::Number(2.0)),
-    ));
+    assert_eq!(
+        ast,
+        Expr::BinOp(
+            Box::new(Expr::Number(1.0)),
+            BinOpKind::Lt,
+            Box::new(Expr::Number(2.0)),
+        )
+    );
 }
 
 #[test]
 fn equality_operators() {
     let ast = parse_expr("print 1 == 1;");
-    assert_eq!(ast, Expr::BinOp(
-        Box::new(Expr::Number(1.0)),
-        BinOpKind::Eq,
-        Box::new(Expr::Number(1.0)),
-    ));
+    assert_eq!(
+        ast,
+        Expr::BinOp(
+            Box::new(Expr::Number(1.0)),
+            BinOpKind::Eq,
+            Box::new(Expr::Number(1.0)),
+        )
+    );
 }
 
 #[test]

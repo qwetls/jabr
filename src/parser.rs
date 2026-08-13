@@ -60,8 +60,12 @@ impl Parser {
         if self.check(kind) {
             Ok(self.advance())
         } else {
-            Err(format!("{} — found {:?} at line {}", msg, self.peek(),
-                        self.tokens[self.pos].line))
+            Err(format!(
+                "{} — found {:?} at line {}",
+                msg,
+                self.peek(),
+                self.tokens[self.pos].line
+            }))
         }
     }
 
@@ -94,8 +98,11 @@ impl Parser {
         self.advance(); // 'let'
         let name = match self.advance().kind {
             TokenKind::Ident(s) => s,
-            ref k => return Err(format!("Expected identifier after 'let' — found {:?} at line {}",
-                                        k, self.tokens[self.pos - 1].line)),
+            ref k => return Err(format!(
+                "Expected identifier after 'let' — found {:?} at line {}",
+                k,
+                self.tokens[self.pos - 1].line
+            )),
         };
         self.expect(&TokenKind::Assign, "Expected '=' after let name")?;
         let expr = self.parse_expr()?;
@@ -124,7 +131,11 @@ impl Parser {
         } else {
             Vec::new()
         };
-        Ok(Stmt::If(cond, then_body, if else_body.is_empty() { None } else { Some(else_body) }))
+        Ok(Stmt::If(
+            cond,
+            then_body,
+            if else_body.is_empty() { None } else { Some(else_body) },
+        ))
     }
 
     fn parse_while(&mut self) -> Result<Stmt, String> {
@@ -138,8 +149,11 @@ impl Parser {
         self.advance(); // 'fn'
         let name = match self.advance().kind {
             TokenKind::Ident(s) => s,
-            ref k => return Err(format!("Expected function name — found {:?} at line {}",
-                                        k, self.tokens[self.pos - 1].line)),
+            ref k => return Err(format!(
+                "Expected function name — found {:?} at line {}",
+                k,
+                self.tokens[self.pos - 1].line
+            )),
         };
         self.expect(&TokenKind::LParen, "Expected '(' after function name")?;
         let mut params = Vec::new();
@@ -147,8 +161,11 @@ impl Parser {
             loop {
                 match self.advance().kind {
                     TokenKind::Ident(s) => params.push(s),
-                    ref k => return Err(format!("Expected parameter name — found {:?} at line {}",
-                                                k, self.tokens[self.pos - 1].line)),
+                    ref k => return Err(format!(
+                        "Expected parameter name — found {:?} at line {}",
+                        k,
+                        self.tokens[self.pos - 1].line
+                    )),
                 }
                 if !self.match_tok(&TokenKind::Comma) {
                     break;
@@ -290,11 +307,17 @@ impl Parser {
         match self.peek() {
             TokenKind::Minus => {
                 self.advance();
-                Ok(Expr::UnaryOp(UnaryOpKind::Neg, Box::new(self.parse_unary()?)))
+                Ok(Expr::UnaryOp(
+                    UnaryOpKind::Neg,
+                    Box::new(self.parse_unary()?),
+                ))
             }
             TokenKind::Bang => {
                 self.advance();
-                Ok(Expr::UnaryOp(UnaryOpKind::Not, Box::new(self.parse_unary()?)))
+                Ok(Expr::UnaryOp(
+                    UnaryOpKind::Not,
+                    Box::new(self.parse_unary()?),
+                ))
             }
             _ => self.parse_primary(),
         }
@@ -330,8 +353,11 @@ impl Parser {
                 self.expect(&TokenKind::RParen, "Expected ')' after expression")?;
                 Ok(expr)
             }
-            ref k => Err(format!("Unexpected token {:?} at line {} while parsing expression",
-                                 k, tok.line)),
+            ref k => Err(format!(
+                "Unexpected token {:?} at line {} while parsing expression",
+                k,
+                tok.line
+            )),
         }
     }
 }

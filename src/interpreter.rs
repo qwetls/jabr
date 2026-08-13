@@ -96,7 +96,8 @@ impl Interpreter {
                 Ok(Flow::Normal)
             }
             Stmt::FnDef(name, params, body) => {
-                self.functions.insert(name.clone(), (params.clone(), body.clone()));
+                self.functions
+                    .insert(name.clone(), (params.clone(), body.clone()));
                 Ok(Flow::Normal)
             }
             Stmt::Return(opt_expr) => {
@@ -109,17 +110,20 @@ impl Interpreter {
         }
     }
 
-    fn eval_expr(&mut self, expr: &Expr, env: &mut HashMap<String, Value>) -> Result<Value, String> {
+    fn eval_expr(
+        &mut self,
+        expr: &Expr,
+        env: &mut HashMap<String, Value>,
+    ) -> Result<Value, String> {
         match expr {
             Expr::Number(n) => Ok(Value::Number(*n)),
             Expr::String(s) => Ok(Value::String(s.clone())),
             Expr::Bool(b) => Ok(Value::Bool(*b)),
-            Expr::Ident(name) => {
-                env.get(name)
-                    .cloned()
-                    .or_else(|| self.globals.get(name).cloned())
-                    .ok_or_else(|| format!("Undefined variable '{}'", name))
-            }
+            Expr::Ident(name) => env
+                .get(name)
+                .cloned()
+                .or_else(|| self.globals.get(name).cloned())
+                .ok_or_else(|| format!("Undefined variable '{}'", name)),
             Expr::UnaryOp(op, inner) => {
                 let val = self.eval_expr(inner, env)?;
                 match (op, val) {
@@ -162,8 +166,12 @@ impl Interpreter {
                 };
 
                 if args.len() != params.len() {
-                    return Err(format!("Function '{}' expects {} args, got {}",
-                                      name, params.len(), args.len()));
+                    return Err(format!(
+                        "Function '{}' expects {} args, got {}",
+                        name,
+                        params.len(),
+                        args.len()
+                    ));
                 }
 
                 let mut call_env = self.globals.clone();
@@ -212,21 +220,17 @@ impl Interpreter {
                 };
                 Ok(Value::Number(result))
             }
-            (Value::String(a), Value::String(b)) => {
-                match op {
-                    BinOpKind::Add => Ok(Value::String(format!("{}{}", a, b))),
-                    BinOpKind::Eq => Ok(Value::Bool(a == b)),
-                    BinOpKind::Neq => Ok(Value::Bool(a != b)),
-                    _ => Err(format!("Cannot {:?} two strings", op)),
-                }
-            }
-            (Value::Bool(a), Value::Bool(b)) => {
-                match op {
-                    BinOpKind::Eq => Ok(Value::Bool(a == b)),
-                    BinOpKind::Neq => Ok(Value::Bool(a != b)),
-                    _ => Err(format!("Cannot {:?} two booleans", op)),
-                }
-            }
+            (Value::String(a), Value::String(b)) => match op {
+                BinOpKind::Add => Ok(Value::String(format!("{}{}", a, b))),
+                BinOpKind::Eq => Ok(Value::Bool(a == b)),
+                BinOpKind::Neq => Ok(Value::Bool(a != b)),
+                _ => Err(format!("Cannot {:?} two strings", op)),
+            },
+            (Value::Bool(a), Value::Bool(b)) => match op {
+                BinOpKind::Eq => Ok(Value::Bool(a == b)),
+                BinOpKind::Neq => Ok(Value::Bool(a != b)),
+                _ => Err(format!("Cannot {:?} two booleans", op)),
+            },
             _ => Err(format!("Type mismatch: {:?} {:?} {:?}", l, op, r)),
         }
     }

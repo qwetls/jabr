@@ -71,7 +71,8 @@ impl Lexer {
         while let Some(c) = self.peek() {
             if c.is_ascii_digit() {
                 self.advance();
-            } else if c == '.' && !has_dot && self.peek_next().map_or(false, |n| n.is_ascii_digit()) {
+            } else if c == '.' && !has_dot && self.peek_next().map_or(false, |n| n.is_ascii_digit())
+            {
                 has_dot = true;
                 self.advance();
             } else {
@@ -213,8 +214,10 @@ impl Lexer {
                                 TokenKind::Gt
                             }
                         }
-                        _ => return Err(format!("Unexpected character '{}' at {}:{}",
-                                                c, line, col)),
+                        _ => {
+                            return Err(format!("Unexpected character '{}' at {}:{}",
+                                c, line, col))
+                        }
                     };
                     tokens.push(Token::new(kind, line, col));
                 }

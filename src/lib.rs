@@ -3,11 +3,11 @@
 // Library entry point: re-exports all public modules so that
 // integration tests and the CLI binary share the same surface.
 
-pub mod token;
-pub mod lexer;
 pub mod ast;
-pub mod parser;
 pub mod interpreter;
+pub mod lexer;
+pub mod parser;
+pub mod token;
 
 pub fn run_source(source: &str) -> Result<(), String> {
     let mut lx = lexer::Lexer::new(source);
