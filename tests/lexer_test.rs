@@ -47,10 +47,7 @@ fn string_literal() {
     let tokens = lex("\"hello world\"");
     assert_eq!(
         tokens,
-        vec![
-            TokenKind::String("hello world".into()),
-            TokenKind::Eof,
-        ]
+        vec![TokenKind::String("hello world".into()), TokenKind::Eof,]
     );
 }
 
